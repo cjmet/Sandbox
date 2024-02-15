@@ -1,37 +1,38 @@
 ﻿
 
+using Newtonsoft.Json.Bson;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-
-
 mainloop();
-Environment.Exit(0);    
+Environment.Exit(0);
 
-
-void mainloop()
+async void mainloop()
 {
     int spinner = 0;
     string message = "Hello World!";
     Console.WriteLine($"{message}");
 
-    //message = GetMessageAsync().Result;               // This will block, because of the .Result.  Aka: "World Goodbye!"
-    Task.Run(() => { GetMessageByRef(ref message); });  // This will NOT block, but is unsafe.  Aka: "World World!"
-    //                                                  // What's the best way to pass values back?  Use a ConcurrentQueue?
-    //                                                  //  
-    //                                                  // Do I pass the list by reference?  Or do I pass the list by value?
-    //                                                  // Volatile keyword?
-    //                                                  // Interlocked class?
-    
+    ButtonClickedAction((x, y) => message = y);
+
+    int i = 0;
     do
     {
         // spin for a while
         var spin = "|/-\\"[spinner++ % 4];
-        Console.Write($"{spin} {message}\r");
+        Console.Write($"[{i++,2}]{spin} {message}\r");
         Thread.Sleep(1000);
     } while (message == "Hello World!");
     Console.WriteLine(message);
+}
+
+
+
+async void ButtonClickedAction(Action<string,string> CallBack)
+{
+    string message = await GetMessageAsync();
+    CallBack(message,message);
 }
 
 async Task<string> GetMessageAsync()
@@ -43,17 +44,8 @@ async Task<string> GetMessageAsync()
     return buffer;
 }
 
-void GetMessageByRef(ref string message)
-{
-    string buffer = "";
-    Task task = new Task(() => { buffer = BlockingIoApiCall(); });
-    task.Start();
-    task.Wait();
-    message = buffer;
-}
-
 string BlockingIoApiCall()
 {
         Task.Delay(3000).Wait();
-        return "World Goodbye!";
+        return "World Goodbye!     ";
 }
