@@ -27,22 +27,36 @@ async void mainloop()
     Console.WriteLine(message);
 }
 
-
-
 async void ButtonClickedAction(Action<string,string> CallBack)
 {
-    string message = await GetMessageAsync();
+    string message = await IOWrapperAsync();
     CallBack(message,message);
 }
 
-async Task<string> GetMessageAsync()
+
+
+// Primary Program and Interactive Client
+// ----
+// Asynchronous Interface
+
+
+
+async Task<string> IOWrapperAsync()     // This is effectively an interface between synchronous and asynchronous code
 {
     string buffer= "";
-    var task  = new Task(() => buffer = BlockingIoApiCall());
+    var task  = new Task(() => buffer = BlockingIoApiCall(), TaskCreationOptions.LongRunning);
     task.Start();
     await task;
     return buffer;
 }
+
+
+
+// Asnchronous Interface
+// ---
+// Synchronous Blocking IO API Call
+
+
 
 string BlockingIoApiCall()
 {
