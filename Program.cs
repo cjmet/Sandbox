@@ -27,7 +27,8 @@ async void mainloop()
     Console.WriteLine(message);
 }
 
-async void ButtonClickedAction(Action<string> CallBack)
+// Async Task or Async Void, since this is  in theory simulating a button click event
+async Task ButtonClickedAction(Action<string> CallBack)
 {
     string message = await IOWrapperAsync();
     CallBack(message);
