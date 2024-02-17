@@ -14,7 +14,7 @@ async void mainloop()
     string message = "Hello World!";
     Console.WriteLine($"{message}");
 
-    ButtonClickedAction((x, y) => message = y);
+    ButtonClickedAction((y) => message = y);
 
     int i = 0;
     do
@@ -27,10 +27,10 @@ async void mainloop()
     Console.WriteLine(message);
 }
 
-async void ButtonClickedAction(Action<string,string> CallBack)
+async void ButtonClickedAction(Action<string> CallBack)
 {
     string message = await IOWrapperAsync();
-    CallBack(message,message);
+    CallBack(message);
 }
 
 
