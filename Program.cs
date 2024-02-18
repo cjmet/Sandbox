@@ -13,8 +13,11 @@ async void mainloop()
     int spinner = 0;
     string message = "Hello World!";
     Console.WriteLine($"{message}");
+    
 
-    ButtonClickedAction((y) => message = y);
+    ButtonClickedAction((y) => message = y);        // Simulated Event Handler
+    var tmp = IOWrapperAsync();                     // without await, this is equivalent to Task.Run
+
 
     int i = 0;
     do
