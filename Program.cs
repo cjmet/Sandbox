@@ -10,7 +10,7 @@ bool loop = true;
 Task.Run(async () => 
 {
     int i = 0;
-    await foreach (var result in new AhGetFiles().GetFilesAsync("m:\\")) 
+    await foreach (var result in new AhGetFiles().GetFilesAsync("z:\\")) 
     { 
         Console.WriteLine(MiddleTruncate($"\rF[{++i}]: {result}")); 
     } 
