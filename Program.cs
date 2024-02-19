@@ -4,6 +4,35 @@ using Newtonsoft.Json.Bson;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using AngelHornetLibrary;
+
+bool loop = true;
+Task.Run(async () => 
+{
+    int i = 0;
+    await foreach (var result in new AhGetFiles().GetFilesAsync("m:\\")) 
+    { 
+        Console.WriteLine(MiddleTruncate($"\rF[{++i}]: {result}")); 
+    } 
+    Console.WriteLine($"Search Complete. [{i}] files found."); 
+    loop = false; });
+
+{
+    int j = 0;
+    int spinner = 0;
+    do
+    {
+
+        // spin for a while
+        var spin = "|/-\\"[spinner++ % 4];
+        Console.Write($"S[{j++,2}]{spin}\r");
+        Thread.Sleep(1000);
+    } while (loop);
+    Console.Write($"S[{j,2}]");
+}
+Environment.Exit(0);
+
+
 
 mainloop();
 Environment.Exit(0);
@@ -13,7 +42,7 @@ async void mainloop()
     int spinner = 0;
     string message = "Hello World!";
     Console.WriteLine($"{message}");
-    
+
 
     ButtonClickedAction((y) => message = y);        // Simulated Event Handler
     var tmp = IOWrapperAsync();                     // without await, this is equivalent to Task.Run
@@ -47,8 +76,8 @@ async Task ButtonClickedAction(Action<string> CallBack)
 
 async Task<string> IOWrapperAsync()     // This is effectively an interface between synchronous and asynchronous code
 {
-    string buffer= "";
-    var task  = new Task(() => buffer = BlockingIoApiCall(), TaskCreationOptions.LongRunning);
+    string buffer = "";
+    var task = new Task(() => buffer = BlockingIoApiCall(), TaskCreationOptions.LongRunning);
     task.Start();
     await task;
     return buffer;
@@ -64,6 +93,15 @@ async Task<string> IOWrapperAsync()     // This is effectively an interface betw
 
 string BlockingIoApiCall()
 {
-        Task.Delay(3000).Wait();
-        return "World Goodbye!     ";
+    Task.Delay(3000).Wait();
+    return "World Goodbye!     ";
+}
+
+
+
+static string MiddleTruncate(string input)
+{
+    var length = Console.BufferWidth - 1;
+    if (input.Length <= length) return input;
+    return input.Substring(0, length / 2 - 3) + " ... " + input.Substring(input.Length - length / 2 + 3);
 }
