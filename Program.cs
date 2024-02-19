@@ -7,15 +7,23 @@ using System.Runtime.CompilerServices;
 using AngelHornetLibrary;
 
 bool loop = true;
-Task.Run(async () => 
+string _progressString = "Starting Search...";
+Progress<string> progress = new Progress<string>(s => _progressString = s); ;
+
+Task task = new Task(async () =>
 {
     int i = 0;
-    await foreach (var result in new AhGetFiles().GetFilesAsync("z:\\")) 
-    { 
-        Console.WriteLine(MiddleTruncate($"\rF[{++i}]: {result}")); 
-    } 
-    Console.WriteLine($"Search Complete. [{i}] files found."); 
-    loop = false; });
+    List<string> paths = ["N:\\Archive", "N:\\FTP", "N:\\Public", "N:\\Temp", "N:\\Updates", "N:\\Work"];
+    await foreach (var result in new AhGetFiles().GetFilesAsync(paths, "*.mp3", progress: progress))
+    {
+        string s = $"\rF[{++i,4}]  {result}";
+        s = s.PadRight(Console.BufferWidth);
+        Console.WriteLine(MiddleTruncate(s));
+    }
+    Console.WriteLine($"Search Complete. [{i}] files found.");
+    loop = false;
+});
+task.Start();
 
 {
     int j = 0;
@@ -25,11 +33,14 @@ Task.Run(async () =>
 
         // spin for a while
         var spin = "|/-\\"[spinner++ % 4];
-        Console.Write($"S[{j++,2}]{spin}\r");
-        Thread.Sleep(1000);
+        string s = $"\rS[{j++/4,4}]{spin} {_progressString}";
+        s = s.PadRight(Console.BufferWidth);
+        Console.Write(MiddleTruncate(s));
+        Thread.Sleep(250);
     } while (loop);
-    Console.Write($"S[{j,2}]");
+    Console.Write($"S[{(j/4),4}]");
 }
+Console.ReadLine();
 Environment.Exit(0);
 
 
