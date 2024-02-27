@@ -16,6 +16,11 @@ Console.WriteLine(Environment.GetFolderPath(Environment.SpecialFolder.LocalizedR
 
 
 
+var list = new List<string>();
+var random = new Random();
+var array = list.ToArray();
+random.Shuffle(array);
+list = array.ToList();
 
 
 
