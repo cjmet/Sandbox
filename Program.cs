@@ -1,15 +1,15 @@
-﻿
+﻿using Microsoft.EntityFrameworkCore;
+using DataLibrary;
 
 
-using System.Collections.Concurrent;
 
-ConcurrentQueue<string?> strings = new ConcurrentQueue<String>();
+var _db = new PlaylistContext();
+var _playlist = _db.Songs.Where(s => s.Title.Contains("Acoustic"));
+var _songs = _db.Songs.Where(s => s.Title.Contains("Rock"));
+var _results = _songs;
 
-strings.Enqueue("one");
-strings.Enqueue(null);
-strings.Enqueue("three");
 
-foreach (var str in strings)
-{
-    Console.WriteLine($"{str}");
-}
+_results = _playlist.Union(_songs);         // OR
+_results = _playlist.Intersect(_songs);     // AND
+_results = _playlist.Except(_songs);        // NOT
+
