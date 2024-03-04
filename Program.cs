@@ -3,47 +3,64 @@ using DataLibrary;
 using System.Diagnostics;
 using AngelHornetLibrary;
 using static AngelHornetLibrary.AhLog;
+using System.Text.RegularExpressions;
 
 LogTrace("");
-
-var _rock = "rockies";
-var _roll = "Song1";
-
-IQueryable<Song>? _selectionSet = new List<Song>().AsQueryable();
-
-_rock = _rock.ToLower();
-_roll = _roll.ToLower();
 var _db = new PlaylistContext();
 Console.WriteLine($"Debug[732] DB:{_db.Songs.Count()}");
 
-{ // Debug
-    Console.WriteLine("Debug[738] and Breakpoint");
-    var _select = _db.Songs.Where(s => s.Id < 0).DefaultIfEmpty();      // This should always be an empty song, and type IQueryable<Song?>?, but not null.
+// Modular Advanced Search
 
-    Console.WriteLine($"Debug[740] First_Set:{_select.Count()}");
+// "Search"
+List<string> tests = [
+    "Rock",
+    "Rock AND Roll",
+    "OR Roll",
+    "AND rock OR Roll", 
+    "AND rock OR Roll AND Rock OR"
+    ];
 
-    var _test = _db.Songs.Where(s => s.Title.ToLower().Contains(_roll)).DefaultIfEmpty();
-    Console.WriteLine($"Debug[741] SecondSet:{_test.Count()}");
+foreach (var test in tests)
+{
+    Console.WriteLine($"\nTest: {test}");
+    ParseSearch(test);
+}
 
-    var _res = _select.Union(_test);
-    Console.WriteLine($"Debug[744] Union:{_res.Count()}");
 
-    foreach (var _song in _res)
+
+
+static List<Song> ParseSearch(string searchString)
+{
+    // Op str Op .*
+    // Op str$
+    // str Op .* 
+
+    var _s = searchString.Trim();
+    Regex _regexSearchOperators = new Regex(@"^(AND|OR|NOT)\b(.*)\b$");
+
+
+
+    Match _matchOp;
+
+    _s = _s.Trim();
+    _matchOp = _regexSearchOperators.Match(_s);
+
+    
+
+    if (_matchOp.Success)
     {
-        if (_song == null)
+        foreach (Group _group in _matchOp.Groups)
         {
-            Console.WriteLine($"Debug[748] Song:NULL");
-            continue;
+            Console.WriteLine($"Group: {_group.Value}");
         }
-        Console.WriteLine($"Debug[748] Song[{_song.Id}]: {_song.Title}");
+
+    }
+    else
+    {
+        Console.WriteLine("No Match");
     }
 
-    Console.WriteLine($"Debug[744] Union:{_res.Count()}");
 
-    _res = _select.Intersect(_test);
-    Console.WriteLine($"Debug[744] Intersect:{_res.Count()}");
+    return new List<Song>();
+}
 
-    _res = _select.Except(_test);
-    Console.WriteLine($"Debug[744] Except:{_res.Count()}");
-
-} // /Debug
