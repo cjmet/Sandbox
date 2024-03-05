@@ -3,96 +3,45 @@ using DataLibrary;
 using System.Diagnostics;
 using AngelHornetLibrary;
 using static AngelHornetLibrary.AhLog;
-using System.Text.RegularExpressions;
+using static DataLibrary.DataLibraryAdvancedSearch;
+using static CommonNet8.CommonAdvancedSearch;
+using static AngelHornetLibrary.AhStrings;
 
-LogTrace("");
+
+LogMsg("");
 var _db = new PlaylistContext();
-Console.WriteLine($"Debug[732] DB:{_db.Songs.Count()}");
+var _repository = new SongRepository(_db);
+Console.WriteLine($"DB:{_db.Songs.Count()} Songs\n");
+List<Song> _list = new List<Song>();
 
-// Modular Advanced Search
+// Current Working Version
+//(_list, _, _) = AdvancedSearchParse(_list, "IS Artist SEARCH Springst OR Petty OR Seger");
 
-// "Search"
-List<string> tests = [
-    "Rock",
-    "Rock AND Roll",
-    "OR Roll",
-    "AND rock OR Roll",
-    "AND rock OR Roll AND Rock NOT",
-    "Rock Rolling Stones Down the AND Mountain",
-    "IS Title Soft Rock OR Heavy Metal NOT Metallica",
-    "== Title ?? Soft Rock || Heavy Metal !! Metallica",
-    "&& Rock", 
-    "|| Rock", 
-    "!! Rock",
-    "== Roll",
-    "?? Rock",
-    ];
 
-foreach (var test in tests)
+
+// New ISongRepository Version
+//_list = await _repository.SearchQuery("Title", "Test Song");
+//(_list, _, _) = AdvancedSearch(_list, "IS Artist SEARCH Springst OR Petty OR Seger");
+//_list = await _repository.AdvancedSearchRepository("IS Title SEARCH Test Song");
+//(_list, _, _) = await _repository.AdvancedSearchRepository(_list, "IS Artist SEARCH Springst OR Petty OR Seger");
+//(_list, _, _) = await _repository.AdvancedSearchRepository(_list, "IS Path SEARCH Jackson Brodie IS Artist OR Lucinda Williams OR First Aid Kit OR Lucinda Williams OR Iris DeMent OR Lori McKenna OR Cowboy Junkies OR Eliza Gilkyson OR Gillian Welch OR Kris DelmHorst OR Lynn Miles OR Madison Violet OR Mary Gauthier OR Nanci Griffith OR Sarah McLachlan");
+
+// Now check Multiple Part Query == 267
+(_list, _, _) = await _repository.AdvancedSearchRepository(_list, "IS Path SEARCH Jackson Brodie IS Artist OR Lucinda Williams OR First Aid Kit");
+(_list, _, _) = await _repository.AdvancedSearchRepository(_list, "IS Artist OR Lucinda Williams OR Iris DeMent OR Lori McKenna OR Cowboy Junkies");
+(_list, _, _) = await _repository.AdvancedSearchRepository(_list, "IS Artist OR Eliza Gilkyson OR Gillian Welch OR Kris DelmHorst OR Lynn Miles");
+(_list, _, _) = await _repository.AdvancedSearchRepository(_list, "IS Artist OR Madison Violet OR Mary Gauthier OR Nanci Griffith OR Sarah McLachlan");
+
+
+
+_list = _list.OrderBy(s => s.AlphaTitle).ToList();
+foreach (var s in _list)
 {
-    Console.WriteLine($"\nTest: {test}");
-    ParseSearch(test);
+    Console.WriteLine($"{TailTruncate(s.Title,30),-30} - {TailTruncate(s.Artist,30),-30} - {TailTruncate(s.Album,30),-30} - {TailTruncate(s.Genre,30).ToString()}");
 }
+
+
+Console.WriteLine($"\nFound: {_list.Count()} Songs");
+Console.WriteLine("\nDone.");
 Console.ReadLine();
-
-
-
-static List<Song> ParseSearch(string _searchString)
-{
-    //  &&  ||  !! ==   ??
-    // (AND|OR|NOT|IS|SEARCH)
-    var _s = _searchString.Trim();
-    Regex _regexSearchOperators = new Regex(@"^\s*(AND|OR|NOT|IS|SEARCH|&&|\|\||!!|==|\?\?)\s(.*)$");
-    Regex _regexSearchStrings = new Regex(@"\b\s+(AND|OR|NOT|IS|SEARCH|&&|\|\||!!|==|\?\?)\s(.*)");
-
-    _searchString = _searchString.Trim();
-    var _matchOp = _regexSearchOperators.Match(_searchString);
-    string _operator1 = "";
-    string _operator2 = "";
-    string _search = "";
-
-
-    if (_matchOp.Success)
-    {
-        _operator1 = _matchOp.Groups[1].Value;
-        _searchString = _matchOp.Groups[2].Value;
-    }
-    else
-    {
-        _operator1 = "SEARCH";
-    }
-
-
-    var _matchStr = _regexSearchStrings.Match(_searchString);
-    if (_matchStr.Success)
-    {
-        _operator2 = _matchStr.Groups[1].Value;
-        _search = _searchString.Substring(0,_matchStr.Groups[1].Index).Trim();
-        _searchString = _searchString.Substring(_matchStr.Groups[1].Index).Trim();
-        //_search = _matchStr.Groups[1].Value;
-        //_searchString = _matchStr.Groups[2].Value;
-    }
-    else if ( _searchString.Length > 0)
-    {
-        _search = _searchString;
-        _searchString = "";
-    }
-    else
-    {
-        Console.WriteLine($"Syntax Error: No Search String found in \"{_operator1} {_searchString}\"");
-        _search = "Syntax Error!";
-    }
-
-    //Console.WriteLine($"Operator: {_operator} Search: {_search} Remainder: {_searchString}");
-    var _op = $"[{_operator1}]";
-    Console.WriteLine($"{_op,-8} [{_search}] :: [{_operator2}] / [{_searchString}]");
-
-
-    if (_searchString.Length > 0)
-    {
-       ParseSearch(_searchString);
-    }
-   
-    return new List<Song>();
-}
 

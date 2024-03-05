@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AhMediaPlayer\CommonNet8\CommonNet8.csproj" />
     <ProjectReference Include="..\AhMediaPlayer\DataLibrary\DataLibrary.csproj" />
     <ProjectReference Include="..\AngelHornetLibrary\AngelHornetLibrary.csproj" />
   </ItemGroup>
