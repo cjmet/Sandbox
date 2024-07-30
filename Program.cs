@@ -19,6 +19,12 @@ HelloWorld("John");             // "Hello John, ..."
 HelloWorld("John", "Earth");    // "Hello John, Welcome to Earth!"
 HelloWorld(planet: "Alpha Centauri");    
 HelloWorld(human: "Jane");       
-HelloWorld(planet: "Pepper", human: "Jack");    
+HelloWorld(planet: "Pepper", human: "Jack");
+
+
+
+// Example Loops and Best Practice of writing complete syntactically
+// correct code blocks first, then filling in the logic later.
+Loops.LoopsAndLoops();          
 
 
