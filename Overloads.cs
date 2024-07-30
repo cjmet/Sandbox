@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sandbox
+﻿namespace Sandbox
 {
     public class Overloads
     {
 
-        public Overloads () {  // this is a constructor
+        public Overloads()
+        {  // this is a constructor
             Console.WriteLine("Overloads() constructor");
         }
-        public Overloads (string s) {  // this is a constructor
+        public Overloads(string s)
+        {  // this is a constructor
             Console.WriteLine($"Overloads(string {s}) constructor");
         }
-        public Overloads (string s, int i) {  // this is a constructor
+        public Overloads(string s, int i)
+        {  // this is a constructor
             Console.WriteLine($"Overloads(string {s}, int {i}) constructor");
         }
 
