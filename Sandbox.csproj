@@ -16,10 +16,4 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AhMediaPlayer\CommonNet8\CommonNet8.csproj" />
-    <ProjectReference Include="..\AhMediaPlayer\DataLibrary\DataLibrary.csproj" />
-    <ProjectReference Include="..\AngelHornetLibrary\AngelHornetLibrary.csproj" />
-  </ItemGroup>
-
 </Project>
