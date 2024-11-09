@@ -1,30 +1,34 @@
-﻿using Sandbox;
-using static Sandbox.Overloads;
+using static AngelHornetLibrary.CLI.CliSystem;
 
 
-var _overloads = new Overloads();  // "Overloads() constructor"
-_overloads = new Overloads("I'm a String");
-_overloads = new Overloads("I'm a String Too", 42);
+using Microsoft.VisualStudio.Shell;
+using System;
+using System.Threading.Tasks;
+using System.IO;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using System.Runtime.InteropServices;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
-Console.WriteLine("\n");
+using System;
+using System.IO;
+using System.Reflection;
 
-HelloPlanet();
-HelloPlanet("Paul");
-HelloPlanet("Ringo", "our House");
-
-Console.WriteLine("\n");
-
-HelloWorld();                   // "Hello World"
-HelloWorld("John");             // "Hello John, ..."
-HelloWorld("John", "Earth");    // "Hello John, Welcome to Earth!"
-HelloWorld(planet: "Alpha Centauri");
-HelloWorld(human: "Jane");
-HelloWorld(planet: "Pepper", human: "Jack");
+using System;
+using EnvDTE;
+using EnvDTE80;
+using System.Reflection;
 
 
+class Program
+{
+    static void Main(string[] args)
+    {
+        string fileName = FindFileInVisualStudio("filename.txt");
+        Console.WriteLine($"Filename: {fileName}");
 
-// Example Loops and Best Practice of writing complete syntactically
-// correct code blocks first, then filling in the logic later.
-Loops.LoopsAndLoops();
+    }
+}
 
 
