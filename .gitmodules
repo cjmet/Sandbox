@@ -1,3 +1,6 @@
 [submodule "AngelHornetLibrary"]
-	path = AngelHornetLibrary
+	path = CSharp/AngelHornetLibrary
+	url = https://github.com/cjmet/AngelHornetLibrary.git
+[submodule "CSharp/AngelHornetLibrary"]
+	path = CSharp/AngelHornetLibrary
 	url = https://github.com/cjmet/AngelHornetLibrary.git
